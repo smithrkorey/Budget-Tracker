@@ -1,15 +1,9 @@
-//update Files to cache
 const FILES_TO_CACHE = [
     '/',
     '/index.html',
-    '/favorites.html',
-    '/topic.html',
-    '/assets/css/style.css',
-    '/dist/app.bundle.js',
-    '/dist/favorites.bundle.js',
-    '/dist/topic.bundle.js',
-    'https://fonts.googleapis.com/css?family=Istok+Web|Montserrat:800&display=swap',
-    'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css',
+    '/index.js',
+    '/db.js',
+    '/styles.css',
   ];
   
   const PRECACHE = 'precache-v1';
@@ -45,7 +39,28 @@ const FILES_TO_CACHE = [
   });
   
   self.addEventListener('fetch', (event) => {
-    //18 lines of code add offline requests to database (activity 13)
+    
+    if (event.request.url.includes("/api/")) {
+        event.respondWith(
+          caches.open(DATA_CACHE_NAME).then(cache => {
+            return fetch(event.request)
+              .then(response => {
+                // If the response was good, clone it and store it in the cache.
+                if (response.status === 200) {
+                  cache.put(evt.request.url, response.clone());
+                }
+    
+                return response;
+              })
+              .catch(err => {
+                // Network request failed, try to get it from the cache.
+                return cache.match(event.request);
+              });
+          }).catch(err => console.log(err))
+        );
+    
+        return;
+      }
     if (event.request.url.startsWith(self.location.origin)) {
       event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
