@@ -15,8 +15,10 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
+var url = "mongodb+srv://smithrkorey-admin:P@ssword!@cluster0.9m1im.mongodb.net/budget?retryWrites=true&w=majority"
+
 mongoose.connect(
-  process.env.MONGODB_URI || 'mongodb://localhost/budget',
+  url, //|| 'mongodb://localhost/budget',
   {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -25,7 +27,7 @@ mongoose.connect(
 });
 
 // routes
-app.use(require("./routes/api.js"));
+app.use(require("./routes/api.js")); 
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`);
